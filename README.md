@@ -6,7 +6,7 @@ Backend часть приложения для поиска фильмов.
 
 IP 51.250.101.177
 
-Backend http://api.movies.fe1ch.nomoredomainsrocks.ru
+Backend https://api.movies.fe1ch.nomoredomainsrocks.ru
 
 ### Функциональность
 
