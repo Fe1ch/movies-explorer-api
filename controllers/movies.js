@@ -1,15 +1,14 @@
 const Movie = require('../models/movie');
 const { STATUS_SUCCESS, STATUS_CREATED } = require('../utils/constants');
 const ForbiddenError = require('../errors/ForbiddenError');
+const { errorMessages, successMessages } = require('../utils/constants');
 
-// GET ALL CARDS
 module.exports.getMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id })
     .then((movies) => res.status(STATUS_SUCCESS).send(movies))
     .catch(next);
 };
 
-// POST CREATE CARD
 module.exports.createMovie = (req, res, next) => {
   const owner = req.user._id;
   const {
@@ -43,18 +42,17 @@ module.exports.createMovie = (req, res, next) => {
     .catch(next);
 };
 
-// DELETE CARD
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params._id)
     .orFail()
     .then((movie) => {
       const owner = movie.owner.toString();
       if (owner !== req.user._id) {
-        throw new ForbiddenError('Нельзя удалить карточку фильма другого пользователя');
+        throw new ForbiddenError(errorMessages.MOVIE_FORBIDDEN);
       } else {
         Movie.findByIdAndDelete(req.params._id)
           .then(() => {
-            res.status(STATUS_SUCCESS).send({ message: `Карточка фильма ${movie} удалена` });
+            res.status(STATUS_SUCCESS).send({ message: successMessages.MOVIE_DELETE });
           })
           .catch(next);
       }

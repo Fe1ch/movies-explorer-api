@@ -10,16 +10,14 @@ const limiter = require('./middlewares/limiter');
 const handlerError = require('./middlewares/handlerError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
+const { PORT, DB_URL } = process.env;
+const { DEFAULT_PORT, DEFAULT_DATABASE } = require('./utils/config');
+
 const app = express();
 app.use(requestLogger);
 app.use(cors());
 
-const {
-  PORT = 3000,
-  DB_URL = 'mongodb://127.0.0.1:27017/moviesdb',
-} = process.env;
-
-mongoose.connect(DB_URL, {
+mongoose.connect(DB_URL || DEFAULT_DATABASE, {
   useNewUrlParser: true,
 });
 
@@ -32,6 +30,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(handlerError);
 
-app.listen(PORT, () => {
+app.listen(PORT || DEFAULT_PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

@@ -12,51 +12,46 @@ const {
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
+const { errorMessages } = require('../utils/constants');
 
 module.exports = ((err, req, res, next) => {
   if (err instanceof ValidationError) {
-    const errorMessage = Object.values(err.errors)
-      // С помощью Object.values(err.errors) мы получаем массив значений этих ошибок.
-      .map((error) => error.message)
-      // Применяем к каждой ошибке в массиве, чтобы извлечь только сообщения об ошибках
-      .join(' ');
-    // объединяем все сообщения об ошибках в строку, разделяя их пробелами.
     return res.status(STATUS_BAD_REQUEST).send({
-      message: `Переданы некорректные данные. ${errorMessage}`,
+      message: errorMessages.VALIDATION_ERROR,
     });
   }
   if (err instanceof DocumentNotFoundError) {
     return res.status(STATUS_NOT_FOUND).send({
-      message: 'В базе данных не найден документ с таким ID',
+      message: errorMessages.DOCUMENT_NOT_FOUND,
     });
   }
   if (err instanceof CastError) {
     return res.status(STATUS_BAD_REQUEST).send({
-      message: `Передан некорректный ID: ${err.value}`,
+      message: errorMessages.CAST_ERROR,
     });
   }
   if (err instanceof UnauthorizedError) {
     return res.status(err.statusCode).send({
-      message: err.message,
+      message: errorMessages.UNAUTHORIZED,
     });
   }
   if (err instanceof ForbiddenError) {
     return res.status(err.statusCode).send({
-      message: err.message,
+      message: errorMessages.FORBIDDEN,
     });
   }
   if (err instanceof NotFoundError) {
     return res.status(err.statusCode).send({
-      message: err.message,
+      message: errorMessages.NOT_FOUND,
     });
   }
   if (err.code === 11000) {
     return res.status(STATUS_CONFLICT).send({
-      message: 'Указанный email уже зарегистрирован. Пожалуйста используйте другой email',
+      message: errorMessages.CONFLICT,
     });
   }
   res.status(STATUS_INTERNAL_SERVER_ERROR).send({
-    message: 'На сервере произошла ошибка',
+    message: errorMessages.INTERNAL_SERVER_ERROR,
   });
   return next();
 });

@@ -2,10 +2,17 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
-const { STATUS_SUCCESS, STATUS_CREATED } = require('../utils/constants');
 const BadRequestError = require('../errors/BadRequestError');
 
+const {
+  STATUS_SUCCESS,
+  STATUS_CREATED,
+  errorMessages,
+  successMessages,
+} = require('../utils/constants');
+
 const { NODE_ENV, SECRET_KEY } = process.env;
+const { MODE_PRODUCTION, DEV_KEY } = require('../utils/config');
 
 // GET USER INFO
 module.exports.getUserInfo = (req, res, next) => {
@@ -54,14 +61,18 @@ module.exports.createUser = (req, res, next) => {
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    next(new BadRequestError('Email или пароль не могут быть пустыми'));
+    next(new BadRequestError(errorMessages.EMAIL_PASSWORD_EMPTY));
   }
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? SECRET_KEY : 'mega-very-secret-key', {
-        expiresIn: '7d',
-      });
-      res.status(STATUS_SUCCESS).send({ token });
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === MODE_PRODUCTION ? SECRET_KEY : DEV_KEY,
+        {
+          expiresIn: '7d',
+        },
+      );
+      res.status(STATUS_SUCCESS).send({ message: successMessages.SIGNIN, token });
     })
     .catch(next);
 };
