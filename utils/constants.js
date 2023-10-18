@@ -13,7 +13,7 @@ const errorMessages = {
   VALIDATION_ERROR: 'Ошибка валидации: Переданы некорректные данные.',
   DOCUMENT_NOT_FOUND: 'Документ не найден в базе данных.',
   CAST_ERROR: 'Ошибка преобразования ID.',
-  UNAUTHORIZED: 'Не авторизован: требуется вход в систему.',
+  UNAUTHORIZED: 'Не верный email или пароль',
   UNAUTHORIZED_REQUIRED: 'Требуется авторизация: отсутствует или неверен заголовок авторизации',
   UNAUTHORIZED_INVALID_TOKEN: 'Требуется авторизация: Неверный токен',
   FORBIDDEN: 'Доступ запрещен: недостаточно прав.',
