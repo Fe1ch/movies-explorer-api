@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const isURL = require('validator/validator');
+const isURL = require('validator/lib/isURL');
 
 const MovieSchema = new mongoose.Schema({
   country: {
